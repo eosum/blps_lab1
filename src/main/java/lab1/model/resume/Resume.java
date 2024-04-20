@@ -17,7 +17,13 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "resumes")
+@Table(
+    name = "resumes",
+    indexes = {
+            @Index(name = "resume_created_by_idx", columnList = "created_by"),
+            @Index(name = "resume_moderator_id_idx", columnList = "moderator_id"),
+    }
+)
 public class Resume {
     @Id
     @GeneratedValue

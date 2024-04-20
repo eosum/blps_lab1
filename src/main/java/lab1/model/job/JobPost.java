@@ -12,7 +12,14 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Entity(name = "job_posts")
+@Entity
+@Table(
+    name = "job_posts",
+    indexes = {
+        @Index(name = "job_created_by_idx", columnList = "created_by"),
+        @Index(name = "job_moderator_id_idx", columnList = "moderator_id"),
+    }
+)
 public class JobPost {
     @Id
     @GeneratedValue
