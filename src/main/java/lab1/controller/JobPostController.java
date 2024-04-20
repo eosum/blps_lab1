@@ -9,6 +9,8 @@ import lab1.service.JobApplicationService;
 import lab1.service.JobPostService;
 import lab1.service.UserService;
 import lombok.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -31,8 +33,11 @@ public class JobPostController {
     private final AccessRightsService accessRightsService;
 
     @GetMapping("/all_job_posts")
-    public ResponseEntity<Collection<JobPostEntity>> getAllJobPosts() {
-        return ResponseEntity.ok(jobPostCollectionToResponse(jobPostService.getAllJobPosts()));
+    public ResponseEntity<Page<JobPostEntity>> getAllJobPosts(
+            @RequestParam(name = "page", defaultValue = "0") int page,
+            @RequestParam(name = "size", defaultValue = "10") int size
+    ) {
+        return ResponseEntity.ok(jobPostPageToResponse(jobPostService.getAllJobPosts(PageRequest.of(page, size))));
     }
 
     @GetMapping("/view")
@@ -78,11 +83,13 @@ public class JobPostController {
 
     @GetMapping("/my_job_posts")
     @PreAuthorize("hasRole('HR')")
-    public ResponseEntity<Collection<JobPostEntity>> getMyJobPosts(
+    public ResponseEntity<Page<JobPostEntity>> getMyJobPosts(
+        @RequestParam(name = "page", defaultValue = "0") int page,
+        @RequestParam(name = "size", defaultValue = "10") int size,
         @AuthenticationPrincipal UserDetails userDetails
     ) {
         var userId = userService.findByEmail(userDetails.getUsername()).getId();
-        return ResponseEntity.ok(jobPostCollectionToResponse(jobPostService.getByUserId(userId)));
+        return ResponseEntity.ok(jobPostPageToResponse(jobPostService.getByUserId(userId, PageRequest.of(page, size))));
     }
 
     @GetMapping("/review")

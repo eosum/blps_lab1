@@ -4,6 +4,7 @@ import lab1.model.job.JobPost;
 import lab1.model.job.JobPostEntity;
 import lab1.model.resume.Resume;
 import lab1.model.resume.ResumeEntity;
+import org.springframework.data.domain.Page;
 
 import java.util.Collection;
 
@@ -40,7 +41,7 @@ public class TransformationUtils {
                 .workMode(jobPost.getWorkMode())
                 .build();
     }
-    public static Collection<JobPostEntity> jobPostCollectionToResponse(Collection<JobPost> jobPosts) {
-        return jobPosts.stream().map(TransformationUtils::jobPostToResponse).toList();
+    public static Page<JobPostEntity> jobPostPageToResponse(Page<JobPost> jobPosts) {
+        return jobPosts.map(TransformationUtils::jobPostToResponse);
     }
 }

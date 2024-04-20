@@ -7,9 +7,9 @@ import lab1.model.job.JobPost;
 import lab1.model.common.Status;
 import lab1.repository.JobPostRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
-import java.util.Collection;
 
 @Service
 @RequiredArgsConstructor
@@ -29,16 +29,16 @@ public class JobPostService {
         return buildedJobPost;
     }
 
-    public Collection<JobPost> getAllJobPosts() {
-        return jobPostRepository.findAllByStatus(Status.APPROVED).orElseThrow(() -> new NoEntitiesException("Вакансий для просмотра нет"));
+    public Page<JobPost> getAllJobPosts(Pageable pageable) {
+        return jobPostRepository.findAllByStatus(Status.APPROVED, pageable);
     }
 
     public JobPost getJobPostById(Long jobPostId) {
         return jobPostRepository.findById(jobPostId).orElseThrow(() -> new NoEntitiesException("Ууупс, вакансия куда - то исчезла"));
     }
 
-    public Collection<JobPost> getByUserId(Long userId) {
-        return jobPostRepository.findAllByCreatedBy(userId).orElseThrow(() -> new NoEntitiesException("Вы не разместили ни одной вакансии"));
+    public Page<JobPost> getByUserId(Long userId, Pageable pageable) {
+        return jobPostRepository.findAllByCreatedBy(userId, pageable);
     }
 
     @Transactional
